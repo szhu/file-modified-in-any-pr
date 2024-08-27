@@ -1,7 +1,7 @@
 {
   "name": "file-modified-in-any-pr",
   "displayName": "File Modified In Any PR",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "publisher": "szhu",
   "main": "./out/extension.js",
