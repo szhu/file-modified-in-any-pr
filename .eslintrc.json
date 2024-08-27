@@ -1,0 +1,46 @@
+{
+  "ignorePatterns": ["out", "dist", "**/*.d.ts"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "root": true,
+  "rules": {
+    "@typescript-eslint/naming-convention": [
+      "warn",
+      {
+        "format": ["camelCase", "PascalCase"],
+        "selector": "import"
+      }
+    ],
+    "@typescript-eslint/semi": "warn",
+    "curly": "warn",
+    "eqeqeq": [
+      "error",
+      "always",
+      {
+        "null": "ignore"
+      }
+    ],
+    "no-throw-literal": "warn",
+    "padding-line-between-statements": [
+      "warn",
+      // After break, continue, return, and throw statements:
+      { "blankLine": "always", "next": "*", "prev": "break" },
+      { "blankLine": "always", "next": "*", "prev": "continue" },
+      { "blankLine": "always", "next": "*", "prev": "return" },
+      { "blankLine": "always", "next": "*", "prev": "throw" },
+
+      // Before and after export statements:
+      { "blankLine": "always", "next": "export", "prev": "*" },
+      { "blankLine": "always", "next": "*", "prev": "export" },
+
+      // After import statements but not between them:
+      { "blankLine": "always", "next": "*", "prev": "import" },
+      { "blankLine": "never", "next": "import", "prev": "import" }
+    ],
+    "semi": "off"
+  }
+}
