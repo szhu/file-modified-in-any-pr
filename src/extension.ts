@@ -12,6 +12,7 @@ export interface ExtContext {
   results?: {
     prs: PrDb;
     changedFiles: ChangedFileDb;
+    currentBranch: string | undefined;
     currentFile: string;
     prsForCurrentFile: Pr[];
   };

@@ -21,8 +21,13 @@ export default async function updateForEditor(
     return;
   }
 
-  if (Ext.results.prsForCurrentFile.length > 0) {
-    const text = `Modified in: ${Ext.results.prsForCurrentFile.map((pr) => `#${pr.number}`).join(" ")}`;
+  const currentBranch = Ext.results.currentBranch;
+  const prsWithoutCurrentBranch =
+    Ext.results.prsForCurrentFile.filter((pr) => pr.branch !== currentBranch) ??
+    [];
+
+  if (prsWithoutCurrentBranch.length > 0) {
+    const text = `Modified in: ${prsWithoutCurrentBranch.map((pr) => `#${pr.number}`).join(" ")}`;
     Ext.statusBarItem.update(text);
   } else {
     Ext.statusBarItem.update("No conflicts.");

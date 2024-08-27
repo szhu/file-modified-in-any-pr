@@ -9,6 +9,7 @@ export interface Pr {
   number: number;
   title: string;
   commit: string;
+  branch: string;
 }
 
 export interface PrDb {
@@ -39,16 +40,18 @@ async function getPrsByBranches(cwd: string) {
   ).join();
   const responseJson = JSON.parse(responseText);
   return Object.fromEntries<Pr>(
-    responseJson.map((pr: any) => [
-      "refs/remotes/origin/" + pr.headRefName,
-      {
-        owner: pr.headRepositoryOwner.login,
-        repo: pr.headRepository.name,
-        number: pr.number,
-        title: pr.title,
-        commit: pr.headRefOid,
-      },
-    ]),
+    responseJson.map((prJson: any) => {
+      const branchRef = prJson.headRefName;
+      const pr: Pr = {
+        branch: branchRef,
+        owner: prJson.headRepositoryOwner.login,
+        repo: prJson.headRepository.name,
+        number: prJson.number,
+        title: prJson.title,
+        commit: prJson.headRefOid,
+      };
+      return [branchRef, pr];
+    }),
   );
 }
 
@@ -61,7 +64,10 @@ async function getChangedFiles(cwd: string, branch: string) {
 
 async function* getAllChangedFiles(cwd: string, branches: string[]) {
   for (const branch of branches) {
-    for (const path of await getChangedFiles(cwd, branch)) {
+    for (const path of await getChangedFiles(
+      cwd,
+      "refs/remotes/origin/" + branch,
+    )) {
       yield { branch, path } as ChangedFile;
     }
   }
@@ -81,6 +87,13 @@ async function makeChangedFilesDb(cwd: string, branches: string[]) {
     insertChangedFile(db, changedFile);
   }
   return db;
+}
+
+async function currentBranchRef(cwd: string) {
+  const [branch] = await $lines(["git", "symbolic-ref", "--short", "HEAD"], {
+    cwd,
+  });
+  return branch;
 }
 
 export default async function fileModifiedInAnyPr(
@@ -103,6 +116,7 @@ export default async function fileModifiedInAnyPr(
   return {
     prs,
     changedFiles,
+    currentBranch: await currentBranchRef(cwdUri.fsPath),
     currentFile: relativePath,
     prsForCurrentFile: prsModified,
   };

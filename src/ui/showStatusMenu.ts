@@ -8,9 +8,12 @@ class Item implements vscode.QuickPickItem {
   label: string;
   description: string;
 
-  constructor(pr: Pr) {
+  constructor(pr: Pr, isCurrentBranch: boolean) {
     this.pr = pr;
-    this.label = `PR #${pr.number}`;
+    this.label = [
+      `PR #${pr.number}`,
+      ...(isCurrentBranch ? ["(current)"] : []),
+    ].join(" ");
     this.description = pr.title;
   }
 }
@@ -22,7 +25,7 @@ export default async function showStatusMenu(Ext: ExtContext, prs: Pr[]) {
   });
 
   const selected = await vscode.window.showQuickPick(
-    prs.map((pr) => new Item(pr)),
+    prs.map((pr) => new Item(pr, pr.branch === Ext.results?.currentBranch)),
     {
       placeHolder:
         "This file was modified in these PRs and may have merge conflicts.",
