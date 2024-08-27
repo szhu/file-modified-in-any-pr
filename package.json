@@ -3,27 +3,18 @@
   "displayName": "File Modified In Any PR",
   "version": "0.0.1",
   "private": true,
+  "publisher": "szhu",
   "main": "./out/extension.js",
   "scripts": {
-    "compile": "tsc -p ./",
+    "compile": "yarn esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --external:crypto --platform=node --sourcemap=inline",
     "lint": "eslint src --ext ts",
+    "package": "vsce package",
     "vscode:prepublish": "yarn run compile",
     "watch": "tsc -watch -p ./"
-  },
-  "contributes": {
-    "commands": [
-      {
-        "command": "file-modified-in-any-pr.helloWorld",
-        "title": "Hello World"
-      }
-    ]
   },
   "activationEvents": [
     "onLanguage"
   ],
-  "dependencies": {
-    "execa": "^9.3.1"
-  },
   "devDependencies": {
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
@@ -32,7 +23,11 @@
     "@typescript-eslint/parser": "^7.11.0",
     "@vscode/test-cli": "^0.0.9",
     "@vscode/test-electron": "^2.4.0",
+    "@vscode/vsce": "^3.0.0",
+    "core-js": "^3.38.1",
+    "esbuild": "^0.23.1",
     "eslint": "^8.57.0",
+    "execa-cjs": "^9.1.1",
     "prettier": "3.3.3",
     "prettier-plugin-organize-imports": "^4.0.0",
     "prettier-plugin-packagejson": "^2.5.2",
